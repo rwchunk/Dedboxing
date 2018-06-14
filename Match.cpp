@@ -13,6 +13,7 @@
 
 #include "Match.h"
 #include "dedGame.h"
+#include <array>
 
 using namespace std;
 Match::Match() {
@@ -75,14 +76,14 @@ void Match::startMatch(){
                     if (boxers[i].down(&boxers[(i + 1) % 2], downLimit))
                         return;
                 }
-                boxers[i].decay(1);
+                boxers[i].decay();
             }
             printStats();
         }
         cout << "KAN!" << endl << "Recovers " << healthRecov << endl << endl;
         for(int i = 0; i<2; i++)
         {
-            boxers[i].regen(healthRecov);
+            boxers[i].regen();
             boxers[i].interval();
         }
             healthRecov *= factor;
@@ -100,6 +101,10 @@ void Match::printTime()
 
 void Match::throwPunch()
 {
+    for(int i = 0; i <2; i++)
+    {
+        boxers[i].selectPunch();
+    }
     if(boxers[0].outSpeeds(boxers[1]))
         boxers[0].throwPunch(&boxers[1]);
     else

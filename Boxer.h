@@ -15,7 +15,7 @@
 #ifndef BOXER_H
 #define BOXER_H
 using namespace std;
-#include <string>
+#include <string.h>
 #include "Punch.h"
 
 class Boxer {
@@ -62,7 +62,10 @@ public:
     
     bool hits(Boxer o);
     void takesDamage(int d);
-    void decay(double d);
+    /**
+     * Re-calculates stats based on current hp.
+     */
+    void decay();
     void printStats();
     bool isDown();
     bool down(Boxer* o, int downLimit);
@@ -71,7 +74,7 @@ public:
     void recoverHalf();
     int getDowns(){return downs;}
     void interval();
-    
+    void selectPunch();
     
     string getName(){return name;}
 
@@ -83,6 +86,7 @@ private:
     int punchTaken, punchTakenTotal;
     string name;
     Punch* punchList;
+    Punch selectedPunch;
 };
 
 #endif /* BOXER_H */

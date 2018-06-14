@@ -26,7 +26,7 @@
  */
 
 #include <iostream>
-#include <string>
+#include <string.h>
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>

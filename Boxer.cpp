@@ -18,7 +18,7 @@
 #include <string.h>
 #include <cstring>
 #include <math.h>
-#include <complex>
+
 
 Boxer::Boxer() {
     hp = 100;
@@ -145,8 +145,7 @@ void Boxer::createNew(string name)
 }
 
 void Boxer::throwPunch(Boxer* o) {
-    int pN = rand() % numPunches;
-    Punch p = punchList[pN];
+    Punch p = selectedPunch;
     if (p.getCost() >= stamina)
     {
         cout << name << " takes a moment to breath" << endl;
@@ -159,6 +158,8 @@ void Boxer::throwPunch(Boxer* o) {
     if(!succeedsRoll(speed, o->speed))
     {
         cout << o->name << " dodges it." << endl;
+        float miss = o->hp - o->stamina;
+        o->stamina+= miss/5.0;
         return;
     }
     
@@ -182,7 +183,8 @@ void Boxer::throwPunch(Boxer* o) {
 
 bool Boxer::outSpeeds(Boxer o)
 {
-    return succeedsRoll(speed, o.speed);
+    return succeedsRoll(speed * selectedPunch.getAcc(), 
+            o.speed * o.selectedPunch.getAcc() );
 }
 
 
@@ -215,12 +217,12 @@ void Boxer::takesDamage(int d)
 {
     hp = max(0, hp - d);
     punchTakenTotal++;
-    stamina -= 2 * d;
+    stamina -= 3 * d;
 }
 
-void Boxer::decay(double d)
+void Boxer::decay()
 {
-    float ratio =  pow(0.997127, 100-stamina);
+    float ratio =  pow(0.997127, 100-hp); //currently set to 75% at 0 hp.
     curDecay = ratio;
     strength = max(1, (int) (mStr * ratio));
     fort = max(1, (int) (mFort * ratio));
@@ -240,7 +242,7 @@ bool Boxer::down(Boxer* o, int downLimit)
     cout << name << " DOWN!" << endl;
     int i;
     int curHealed = 0;
-    int target = max(3, 7 - hp / 10) + stamina / -5;
+    int target = max(3, 7 - hp / 10) + stamina / -15;
     if (hp <= 1)
         target = 999999;
     if (downs >= downLimit)
@@ -290,4 +292,9 @@ void Boxer::interval()
     //stamina = hp;
     recoverHalf();
     downs = 0;
+}
+
+void Boxer::selectPunch()
+{
+    selectedPunch = punchList[rand() % numPunches];
 }
